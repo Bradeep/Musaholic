@@ -1,0 +1,10 @@
+.button-wrapper {
+  min-width: 80px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.1);
+  }
+}
