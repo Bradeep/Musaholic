@@ -1,0 +1,11 @@
+.navWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  .title-wrapper {
+    color: white;
+    padding: 6px;
+    border-radius: 5px;
+    background-color: green;
+  }
+}
