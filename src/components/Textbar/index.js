@@ -1,10 +1,47 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+import "./index.scss";
 
-const TextBar = ({ className, placeholder = "Start Guessing..." }) => {
+const TextBar = ({
+  className,
+  placeholder = "Start Guessing...",
+  onSearch,
+  suggestions = [],
+}) => {
+  const TextBarRef = useRef(null);
+
+  const [value, setValue] = useState("");
+  const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [TextBarRef]);
+
+  const handleOutsideClick = (event) => {
+    if (TextBarRef.current && !TextBarRef.current.contains(event.target)) {
+      setIsSuggestionOpen(false);
+    }
+  };
+
+  const onChange = (e) => {
+    setValue(e.value);
+    onSearch(e.value);
+    setIsSuggestionOpen(true);
+  };
+
+  const onClickSuggestion = (suggestion) => {
+    setValue(suggestion);
+    onSearch(suggestion);
+    setIsSuggestionOpen(false);
+  };
+
   return (
-    <div className={`textbar-wrapper ${className}`}>
+    <div className={`textbar-wrapper ${className}`} ref={TextBarRef}>
       <input
         type="text"
+        value={value}
         placeholder={placeholder}
         style={{
           padding: "8px",
@@ -12,7 +49,22 @@ const TextBar = ({ className, placeholder = "Start Guessing..." }) => {
           borderRadius: "8px",
           width: "300px",
         }}
-      ></input>
+        onChange={(e) => onChange(e.target)}
+      />
+      {suggestions.length > 0 && isSuggestionOpen && (
+        <div className="text_box-suggestion--wrapper">
+          {suggestions.map((suggestion, index) => (
+            <div
+              value={suggestion}
+              className="text_box-suggestion--text"
+              onClick={() => onClickSuggestion(suggestion)}
+              key={`search-bar-suggestion-${index}`}
+            >
+              <span>* {suggestion}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
