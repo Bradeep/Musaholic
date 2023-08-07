@@ -2,8 +2,7 @@ import React from "react";
 import "./index.scss";
 
 const Button = ({
-  text = "Hi",
-  icon,
+  onClick,
   classname,
   buttonColor = "green",
   style,
@@ -16,6 +15,7 @@ const Button = ({
         ...style,
         backgroundColor: buttonColor,
       }}
+      onClick={onClick}
     >
       {children}
     </div>

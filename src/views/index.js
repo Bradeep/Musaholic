@@ -14,10 +14,13 @@ import { interceptor } from "../service/interceptor";
 
 import "./index.scss";
 
+const NO_OF_CHANCES = 4;
+
 const App = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [chances, setChances] = useState(1);
   const audioRef = useRef();
 
   useEffect(() => {
@@ -51,7 +54,7 @@ const App = () => {
       player.pause();
       player.currentTime = 0;
       setIsAudioPlaying(false);
-    }, 9000);
+    }, chances * 3000);
   };
 
   const onclickPlayButton = () => {
@@ -59,6 +62,21 @@ const App = () => {
       ? audioRef.current.audioEl.current.play()
       : audioRef.current.audioEl.current.pause();
     setIsAudioPlaying(!isAudioPlaying);
+  };
+
+  const onClickSkip = () => {
+    // const guess = guesses;
+    const newChn = chances + 1;
+    setChances(newChn);
+    // setValue(null);
+    // inputRef.current.value = "";
+    // setEndTime(endTime + 3000);
+    if (newChn > NO_OF_CHANCES) {
+      setChances(10);
+    }
+    // guess.push('🔴 '+ 'Skipped')
+    // setGuesses(guess)
+    // setDisplayMessage(`${newChn} chances left`);
   };
 
   return (
@@ -72,7 +90,7 @@ const App = () => {
           </div>
           <div className="content-info--guess">Guess</div>
           <div className="content-info--text">
-            Click to play audio for <br /> 3 seconds
+            Click to play audio for <br /> {chances * 3} seconds
           </div>
           <ReactAudioPlayer
             src={
@@ -97,7 +115,9 @@ const App = () => {
           <TextBar onSearch={onSearch} suggestions={suggestions} />
           <div className="content-buttons">
             <Button buttonColor="rgb(30, 215, 96)">Submit</Button>
-            <Button buttonColor="rgb(237, 95, 74)">{"Skip (+3s)"}</Button>
+            <Button buttonColor="rgb(237, 95, 74)" onClick={onClickSkip}>
+              {"Skip (+3s)"}
+            </Button>
           </div>
         </div>
       </div>
