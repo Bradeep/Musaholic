@@ -1,0 +1,50 @@
+$rotation-animation-speed: 2s;
+$rotation-animation-easing: linear;
+$stroke-animation-speed: 1.5s;
+$stroke-animation-easing: ease-in-out;
+$stroke-width: 3px;
+$stroke-start-dasharray: 1, 200;
+$stroke-end-dasharray: 89, 200;
+
+.loader {
+  margin: 0px auto;
+  width: 50px;
+  height: 50px;
+}
+
+.circular-loader {
+  animation: rotate $rotation-animation-speed $rotation-animation-easing
+    infinite;
+}
+
+.loader-path {
+  fill: none;
+  stroke-width: $stroke-width;
+  animation: animate-stroke $stroke-animation-speed $stroke-animation-easing
+    infinite;
+  stroke-linecap: round;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animate-stroke {
+  0% {
+    stroke-dasharray: $stroke-start-dasharray;
+    stroke-dashoffset: 0;
+    stroke: green;
+  }
+  50% {
+    stroke-dasharray: $stroke-end-dasharray;
+    stroke-dashoffset: -35;
+    stroke: green;
+  }
+  100% {
+    stroke-dasharray: $stroke-end-dasharray;
+    stroke-dashoffset: -124;
+    stroke: green;
+  }
+}
