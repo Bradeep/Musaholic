@@ -27,8 +27,10 @@ const TextBar = ({
 
   const onChange = (e) => {
     setValue(e.value);
-    onSearch(e.value);
-    setIsSuggestionOpen(true);
+    if (e.value?.length > 2) {
+      onSearch(e.value);
+      setIsSuggestionOpen(true);
+    } else setIsSuggestionOpen(false);
   };
 
   const onClickSuggestion = (suggestion) => {
