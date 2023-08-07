@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactAudioPlayer from "react-audio-player";
 
 import NavBar from "../components/navBar";
-import "./index.scss";
 import TextBar from "../components/Textbar";
 import Button from "../components/Button";
+import Loader from "../components/Loader";
 
 import PlayIcon from "../assets/play.svg";
 import PauseIcon from "../assets/pause.svg";
@@ -12,9 +12,12 @@ import { debounce } from "../utils/utilFunctions";
 import { getRequest } from "../service/apiRequest";
 import { interceptor } from "../service/interceptor";
 
+import "./index.scss";
+
 const App = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const audioRef = useRef();
 
   useEffect(() => {
@@ -76,17 +79,21 @@ const App = () => {
               "https://audio.jukehost.co.uk/yRmqdME1c5A4Wr6x3a7vxcF3l241qCTe"
             }
             ref={audioRef}
-            // onLoadedMetadata={() => setLoading(false)}
+            onLoadedMetadata={() => setIsLoading(false)}
             onPlay={() => onAudioPlay()}
           />
-          <img
-            src={isAudioPlaying ? PauseIcon : PlayIcon}
-            height={64}
-            width={64}
-            className="content-icon--play"
-            alt="play"
-            onClick={onclickPlayButton}
-          />
+          {isLoading ? (
+            <Loader className="content-loader" />
+          ) : (
+            <img
+              src={isAudioPlaying ? PauseIcon : PlayIcon}
+              height={64}
+              width={64}
+              className="content-icon--play"
+              alt="play"
+              onClick={onclickPlayButton}
+            />
+          )}
           <TextBar onSearch={onSearch} suggestions={suggestions} />
           <div className="content-buttons">
             <Button buttonColor="rgb(30, 215, 96)">Submit</Button>
