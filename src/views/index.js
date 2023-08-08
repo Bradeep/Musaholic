@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import ReactAudioPlayer from "react-audio-player";
 
 import NavBar from "../components/navBar";
@@ -9,7 +9,7 @@ import Loader from "../components/Loader";
 import PlayIcon from "../assets/play.svg";
 import PauseIcon from "../assets/pause.svg";
 import { debounce } from "../utils/utilFunctions";
-import { getRequest } from "../service/apiRequest";
+import { getRequest, getSongs } from "../service/apiRequest";
 import { interceptor } from "../service/interceptor";
 
 import "./index.scss";
@@ -18,14 +18,33 @@ const NO_OF_CHANCES = 4;
 
 const App = () => {
   const [suggestions, setSuggestions] = useState([]);
+  const [songList, setSongList] = useState({});
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [chances, setChances] = useState(1);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [todaySong, setTodaySong] = useState({});
   const audioRef = useRef();
 
   useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+      const res = await getSongs({}, {});
+      setSongList(res.data);
+      setIsLoading(false);
+    };
     interceptor();
+    getData();
   }, []);
+
+  useEffect(() => {
+    const tdate = selectedDate;
+    const offset = tdate.getTimezoneOffset();
+    const offsetDate = new Date(tdate.getTime() - offset * 60 * 1000);
+    const formatDate = offsetDate.toISOString().split("T")[0];
+    const todaysSong = songList[formatDate] || {};
+    setTodaySong(todaysSong);
+  }, [songList, selectedDate]);
 
   const onSearch = debounce(async (value) => {
     const requestUrl = `/v1/search?q=${value}&type=track,album&market=IN&include_external=audio&limit=8`;
@@ -47,7 +66,7 @@ const App = () => {
     } catch (error) {}
   }, 500);
 
-  const onAudioPlay = () => {
+  const onAudioPlay = useCallback(() => {
     var player = audioRef.current.audioEl.current;
 
     setTimeout(function () {
@@ -55,33 +74,31 @@ const App = () => {
       player.currentTime = 0;
       setIsAudioPlaying(false);
     }, chances * 3000);
-  };
+  }, [chances]);
 
-  const onclickPlayButton = () => {
+  const onclickPlayButton = useCallback(() => {
     !isAudioPlaying
       ? audioRef.current.audioEl.current.play()
       : audioRef.current.audioEl.current.pause();
     setIsAudioPlaying(!isAudioPlaying);
-  };
+  }, [isAudioPlaying]);
 
-  const onClickSkip = () => {
-    // const guess = guesses;
+  const onClickSkip = useCallback(() => {
     const newChn = chances + 1;
     setChances(newChn);
-    // setValue(null);
-    // inputRef.current.value = "";
-    // setEndTime(endTime + 3000);
+
     if (newChn > NO_OF_CHANCES) {
       setChances(10);
     }
-    // guess.push('🔴 '+ 'Skipped')
-    // setGuesses(guess)
-    // setDisplayMessage(`${newChn} chances left`);
+  }, [chances]);
+
+  const onDateSelect = (date) => {
+    setSelectedDate(date);
   };
 
   return (
     <div className="wrapper">
-      <NavBar title={"MUSAHOLIC"} />
+      <NavBar title={"MUSAHOLIC"} onDateSelect={onDateSelect} />
       <div className="content-wrapper">
         <div className="content-title">Guess the song</div>
         <div className="content-data">
@@ -93,9 +110,7 @@ const App = () => {
             Click to play audio for <br /> {chances * 3} seconds
           </div>
           <ReactAudioPlayer
-            src={
-              "https://audio.jukehost.co.uk/yRmqdME1c5A4Wr6x3a7vxcF3l241qCTe"
-            }
+            src={todaySong.url}
             ref={audioRef}
             onLoadedMetadata={() => setIsLoading(false)}
             onPlay={() => onAudioPlay()}

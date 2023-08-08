@@ -1,6 +1,23 @@
 import api from "./api";
 import axios from "axios";
 
+export const getSongs = async (data, headerData) => {
+  return axios
+    .create({
+      baseURL: process.env.REACT_APP_SONGS_DB_URL,
+      Accept: "application/json, text/plain, */*",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Content-Type": "application/json",
+    })
+    .get("", data, {
+      headers: {
+        ...headerData,
+      },
+    })
+    .then((resp) => resp)
+    .catch((error) => error.response);
+};
+
 export const getRequest = async (requestUrl, data, headerData) => {
   return api
     .get(requestUrl, data, {
