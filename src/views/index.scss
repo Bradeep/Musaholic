@@ -58,6 +58,14 @@
         display: flex;
         gap: 15px;
       }
+      .content-guess--history {
+        padding: 15px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 80%;
+      }
     }
   }
 }

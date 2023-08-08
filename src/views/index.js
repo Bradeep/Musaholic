@@ -24,6 +24,8 @@ const App = () => {
   const [chances, setChances] = useState(1);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [todaySong, setTodaySong] = useState({});
+  const [guesses, setGuesses] = useState([]);
+  const [currentInput, setCurrentInput] = useState("");
   const audioRef = useRef();
 
   useEffect(() => {
@@ -47,6 +49,7 @@ const App = () => {
   }, [songList, selectedDate]);
 
   const onSearch = debounce(async (value) => {
+    setCurrentInput(value);
     const requestUrl = `/v1/search?q=${value}&type=track,album&market=IN&include_external=audio&limit=8`;
     try {
       const res = await getRequest(requestUrl, null, {});
@@ -83,14 +86,30 @@ const App = () => {
     setIsAudioPlaying(!isAudioPlaying);
   }, [isAudioPlaying]);
 
+  const onClickSubmit = () => {
+    const guess = guesses;
+
+    if (currentInput.toLowerCase().includes(todaySong?.answer?.toLowerCase())) {
+      setChances(10);
+      guess.push("🟢 " + currentInput.toLowerCase());
+    } else {
+      setChances((chance) => chance + 1);
+      guess.push("🔴 " + currentInput.toLowerCase());
+    }
+  };
+
   const onClickSkip = useCallback(() => {
     const newChn = chances + 1;
     setChances(newChn);
 
+    const guess = guesses;
+    guess.push("🔴 Skipped");
+    setGuesses(guess);
+
     if (newChn > NO_OF_CHANCES) {
       setChances(10);
     }
-  }, [chances]);
+  }, [chances, guesses]);
 
   const onDateSelect = (date) => {
     setSelectedDate(date);
@@ -103,7 +122,16 @@ const App = () => {
         <div className="content-title">Guess the song</div>
         <div className="content-data">
           <div className="image-wrapper">
-            <div className="image-question">?</div>
+            {chances >= 10 ? (
+              <img
+                src={todaySong.picture}
+                alt="pic"
+                height={"150px"}
+                width={"150px"}
+              />
+            ) : (
+              <div className="image-question">?</div>
+            )}
           </div>
           <div className="content-info--guess">Guess</div>
           <div className="content-info--text">
@@ -129,10 +157,24 @@ const App = () => {
           )}
           <TextBar onSearch={onSearch} suggestions={suggestions} />
           <div className="content-buttons">
-            <Button buttonColor="rgb(30, 215, 96)">Submit</Button>
+            <Button buttonColor="rgb(30, 215, 96)" onClick={onClickSubmit}>
+              Submit
+            </Button>
             <Button buttonColor="rgb(237, 95, 74)" onClick={onClickSkip}>
               {"Skip (+3s)"}
             </Button>
+          </div>
+          <div className="content-guess--history">
+            {guesses.map((each) => {
+              return (
+                <input
+                  type={"text"}
+                  style={{ color: "white", borderRadius: "6px" }}
+                  disabled
+                  value={each}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
