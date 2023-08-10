@@ -181,12 +181,18 @@ const App = () => {
               <TextBar onSearch={onSearch} suggestions={suggestions} />
 
               <div className="content-buttons">
-                <Button buttonColor="rgb(30, 215, 96)" onClick={onClickSubmit}>
-                  Submit
-                </Button>
-                <Button buttonColor="rgb(237, 95, 74)" onClick={onClickSkip}>
-                  {"Skip (+3s)"}
-                </Button>
+                <Button
+                  buttonColor="rgb(30, 215, 96)"
+                  type="contained"
+                  onClick={onClickSubmit}
+                  title={"Submit"}
+                />
+                <Button
+                  buttonColor="rgb(237, 95, 74)"
+                  type="contained"
+                  onClick={onClickSkip}
+                  title={"Skip (+3s)"}
+                />
               </div>
             </>
           )}
