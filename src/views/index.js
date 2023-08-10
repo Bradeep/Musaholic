@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import ReactAudioPlayer from "react-audio-player";
 
+import Countdown from "./countDown";
+
 import NavBar from "../components/navBar";
 import TextBar from "../components/Textbar";
 import Button from "../components/Button";
@@ -8,7 +10,7 @@ import Loader from "../components/Loader";
 
 import PlayIcon from "../assets/play.svg";
 import PauseIcon from "../assets/pause.svg";
-import { debounce } from "../utils/utilFunctions";
+import { debounce, getFormattedDate } from "../utils/utilFunctions";
 import { getRequest, getSongs } from "../service/apiRequest";
 import { interceptor } from "../service/interceptor";
 
@@ -26,24 +28,20 @@ const App = () => {
   const [todaySong, setTodaySong] = useState({});
   const [guesses, setGuesses] = useState([]);
   const [currentInput, setCurrentInput] = useState("");
+  const [isAnswerFound, setIsAnswerFound] = useState(false);
   const audioRef = useRef();
 
   useEffect(() => {
     const getData = async () => {
-      setIsLoading(true);
       const res = await getSongs({}, {});
       setSongList(res.data);
-      setIsLoading(false);
     };
     interceptor();
     getData();
   }, []);
 
   useEffect(() => {
-    const tdate = selectedDate;
-    const offset = tdate.getTimezoneOffset();
-    const offsetDate = new Date(tdate.getTime() - offset * 60 * 1000);
-    const formatDate = offsetDate.toISOString().split("T")[0];
+    const formatDate = getFormattedDate(selectedDate);
     const todaysSong = songList[formatDate] || {};
     setTodaySong(todaysSong);
   }, [songList, selectedDate]);
@@ -87,10 +85,12 @@ const App = () => {
   }, [isAudioPlaying]);
 
   const onClickSubmit = () => {
+    if (currentInput === "") return;
     const guess = guesses;
 
     if (currentInput.toLowerCase().includes(todaySong?.answer?.toLowerCase())) {
       setChances(10);
+      setIsAnswerFound(true);
       guess.push("🟢 " + currentInput.toLowerCase());
     } else {
       setChances((chance) => chance + 1);
@@ -113,6 +113,10 @@ const App = () => {
 
   const onDateSelect = (date) => {
     setSelectedDate(date);
+    setIsLoading(true);
+    setGuesses([]);
+    setChances(1);
+    setIsAnswerFound(false);
   };
 
   return (
@@ -122,7 +126,7 @@ const App = () => {
         <div className="content-title">Guess the song</div>
         <div className="content-data">
           <div className="image-wrapper">
-            {chances >= 10 ? (
+            {chances > 4 ? (
               <img
                 src={todaySong.picture}
                 alt="pic"
@@ -133,10 +137,12 @@ const App = () => {
               <div className="image-question">?</div>
             )}
           </div>
+
           <div className="content-info--guess">Guess</div>
           <div className="content-info--text">
             Click to play audio for <br /> {chances * 3} seconds
           </div>
+
           <ReactAudioPlayer
             src={todaySong.url}
             ref={audioRef}
@@ -155,15 +161,33 @@ const App = () => {
               onClick={onclickPlayButton}
             />
           )}
-          <TextBar onSearch={onSearch} suggestions={suggestions} />
-          <div className="content-buttons">
-            <Button buttonColor="rgb(30, 215, 96)" onClick={onClickSubmit}>
-              Submit
-            </Button>
-            <Button buttonColor="rgb(237, 95, 74)" onClick={onClickSkip}>
-              {"Skip (+3s)"}
-            </Button>
-          </div>
+          {chances > 4 ? (
+            <div className="content-final_state">
+              <div className="title">{todaySong?.answer}</div>
+              <div
+                className="status"
+                style={{
+                  color: isAnswerFound ? "#1ed760" : "red",
+                  fontSize: "17px",
+                }}
+              >
+                {isAnswerFound ? "You Guessed Correct" : "Guessed Wrong"}
+              </div>
+            </div>
+          ) : (
+            <>
+              <TextBar onSearch={onSearch} suggestions={suggestions} />
+
+              <div className="content-buttons">
+                <Button buttonColor="rgb(30, 215, 96)" onClick={onClickSubmit}>
+                  Submit
+                </Button>
+                <Button buttonColor="rgb(237, 95, 74)" onClick={onClickSkip}>
+                  {"Skip (+3s)"}
+                </Button>
+              </div>
+            </>
+          )}
           <div className="content-guess--history">
             {guesses.map((each) => {
               return (
@@ -176,6 +200,7 @@ const App = () => {
               );
             })}
           </div>
+          {chances > 4 && <Countdown />}
         </div>
       </div>
     </div>

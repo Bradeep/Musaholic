@@ -23,3 +23,12 @@ export const debounce = (func, delay) => {
     }, delay);
   };
 };
+
+export const getFormattedDate = (date) => {
+  const tdate = date;
+  const offset = tdate.getTimezoneOffset();
+  const offsetDate = new Date(tdate.getTime() - offset * 60 * 1000);
+  const formatDate = offsetDate.toISOString().split("T")[0];
+
+  return formatDate;
+};

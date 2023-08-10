@@ -46,6 +46,17 @@
       .content-loader {
         margin-bottom: 20px;
       }
+      .content-final_state {
+        text-align: center;
+        .title {
+          font-size: 24px;
+          font-weight: 500;
+          text-transform: capitalize;
+        }
+        .status {
+          font-size: 18px;
+        }
+      }
       .content-icon--play {
         cursor: pointer;
         margin-bottom: 20px;
