@@ -83,7 +83,7 @@ const Countdown = () => {
 
   return (
     <div className="countdown" style={{ paddingTop: "10px" }}>
-      <div>Next song in:</div>
+      <div className="text">Next song in:</div>
       <div>{timer}</div>
     </div>
   );

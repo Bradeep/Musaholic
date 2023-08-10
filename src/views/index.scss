@@ -14,6 +14,12 @@
       border: solid 1px rgb(50, 50, 50);
       padding: 8px;
       text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      span {
+        font-size: 15px;
+        font-weight: 500;
+      }
     }
     .content-data {
       display: flex;

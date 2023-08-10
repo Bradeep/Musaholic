@@ -123,7 +123,9 @@ const App = () => {
     <div className="wrapper">
       <NavBar title={"MUSAHOLIC"} onDateSelect={onDateSelect} />
       <div className="content-wrapper">
-        <div className="content-title">Guess the song</div>
+        <div className="content-title">
+          Guess the song: <span>{getFormattedDate(selectedDate)}</span>
+        </div>
         <div className="content-data">
           <div className="image-wrapper">
             {chances > 4 ? (
