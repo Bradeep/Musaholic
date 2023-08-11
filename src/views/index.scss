@@ -1,3 +1,5 @@
+@import "../constants/variables";
+
 .wrapper {
   min-height: 100vh;
   color: white;
@@ -82,6 +84,12 @@
         flex-direction: column;
         gap: 10px;
         width: 80%;
+        .guesses-wrapper {
+          color: "white";
+          border-radius: 6px;
+          padding: 6px 4px;
+          background-color: $GREY_1;
+        }
       }
     }
   }

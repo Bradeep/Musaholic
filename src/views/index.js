@@ -199,14 +199,14 @@ const App = () => {
             </>
           )}
           <div className="content-guess--history">
-            {guesses.map((each) => {
+            {guesses.map((guess) => {
               return (
-                <input
-                  type={"text"}
+                <div
                   style={{ color: "white", borderRadius: "6px" }}
-                  disabled
-                  value={each}
-                />
+                  className="guesses-wrapper"
+                >
+                  {guess}
+                </div>
               );
             })}
           </div>
