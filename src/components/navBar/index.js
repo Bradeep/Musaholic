@@ -22,7 +22,7 @@ const NavBar = ({ title, onDateSelect }) => {
     />
   ));
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date("2022-10-21"));
   const [isInstructionOpen, setIsInstructionOpen] = useState(false);
 
   const onChangeDate = (date) => {
@@ -55,7 +55,9 @@ const NavBar = ({ title, onDateSelect }) => {
           <DatePicker
             selected={selectedDate}
             dateFormat="dd/MM/yyyy"
-            filterDate={(e) => e < new Date() && e > new Date("2022-07-03")}
+            filterDate={(e) =>
+              e < new Date("2022-10-22") && e > new Date("2022-07-03")
+            }
             onChange={(date) => onChangeDate(date)}
             customInput={<CalendarInput />}
           />

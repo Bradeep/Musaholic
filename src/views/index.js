@@ -8,6 +8,7 @@ import NavBar from "../components/navBar";
 import TextBar from "../components/Textbar";
 import Button from "../components/Button";
 import Loader from "../components/Loader";
+import Modal from "../components/Modal";
 
 import PlayIcon from "../assets/play.svg";
 import PauseIcon from "../assets/pause.svg";
@@ -25,11 +26,12 @@ const App = () => {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [chances, setChances] = useState(1);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date("2022-10-21"));
   const [todaySong, setTodaySong] = useState({});
   const [guesses, setGuesses] = useState([]);
   const [currentInput, setCurrentInput] = useState("");
   const [isAnswerFound, setIsAnswerFound] = useState(false);
+  const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(true);
   const audioRef = useRef();
 
   useEffect(() => {
@@ -46,6 +48,10 @@ const App = () => {
     const todaysSong = songList[formatDate] || {};
     setTodaySong(todaysSong);
   }, [songList, selectedDate]);
+
+  const onCloseNoticeModal = () => {
+    setIsNoticeModalOpen(false);
+  };
 
   const onSearch = debounce(async (value) => {
     setCurrentInput(value);
@@ -123,6 +129,22 @@ const App = () => {
   return (
     <div className="wrapper">
       <NavBar title={"MUSAHOLIC"} onDateSelect={onDateSelect} />
+      <Modal
+        header={"Important Note"}
+        open={isNoticeModalOpen}
+        onClose={onCloseNoticeModal}
+        modalCustomClass="notice-modal_class"
+        headerCustomId="notice-modal--title"
+      >
+        <div>
+          No new songs has been added since Oct 21,2022. You can continue
+          playing for any older dates by clicking on calendar icon at the top.
+        </div>
+        <div>
+          P.S - Musaholic is no longer maintained actively by the developer.
+          Thanks for playing till now.
+        </div>
+      </Modal>
       <div className="content-wrapper">
         <div className="content-title">
           Guess the song: <span>{getFormattedDate(selectedDate)}</span>
@@ -200,11 +222,12 @@ const App = () => {
             </>
           )}
           <div className="content-guess--history">
-            {guesses.map((guess) => {
+            {guesses.map((guess, index) => {
               return (
                 <div
                   style={{ color: "white", borderRadius: "6px" }}
                   className="guesses-wrapper"
+                  key={`guesses-${index}`}
                 >
                   {guess}
                 </div>
@@ -212,7 +235,7 @@ const App = () => {
             })}
           </div>
           {chances > 4 && <Countdown />}
-          <ShareButton chances={chances} date={selectedDate} />
+          {chances > 4 && <ShareButton chances={chances} date={selectedDate} />}
         </div>
       </div>
     </div>
