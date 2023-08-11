@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import ReactAudioPlayer from "react-audio-player";
 
 import Countdown from "./countDown";
+import ShareButton from "./share";
 
 import NavBar from "../components/navBar";
 import TextBar from "../components/Textbar";
@@ -211,6 +212,7 @@ const App = () => {
             })}
           </div>
           {chances > 4 && <Countdown />}
+          <ShareButton chances={chances} date={selectedDate} />
         </div>
       </div>
     </div>
