@@ -1,9 +1,6 @@
 import React, { Fragment, useEffect, useRef } from "react";
-// Component Imports
 import Button from "../Button";
-// Icon Imports
 import CrossIcon from "../../assets/CrossIcon.svg";
-// SCSS & other imports
 import "./styles.scss";
 import {
   isObjectAndHasData,

@@ -73,7 +73,7 @@ const Button = ({
         backgroundColor: backgroundColorBasedOnType(type),
         color: textColor,
       }}
-      onClick={onButtonClick}
+      onClick={disabled ? () => {} : onButtonClick}
       id={id}
       data-testid="custom-button-component"
     >

@@ -186,12 +186,14 @@ const App = () => {
                   type="contained"
                   onClick={onClickSubmit}
                   title={"Submit"}
+                  disabled={isLoading}
                 />
                 <Button
                   buttonColor="rgb(237, 95, 74)"
                   type="contained"
                   onClick={onClickSkip}
                   title={"Skip (+3s)"}
+                  disabled={isLoading}
                 />
               </div>
             </>
