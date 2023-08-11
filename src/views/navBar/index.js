@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import Calendar from "../../assets/calendar.svg";
 import QuestionMark from "../../assets/question.svg";
 
-import Modal from "../Modal";
+import Modal from "../../components/Modal";
 
 import "react-datepicker/dist/react-datepicker.css";
 

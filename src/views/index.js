@@ -4,7 +4,7 @@ import ReactAudioPlayer from "react-audio-player";
 import Countdown from "./countDown";
 import ShareButton from "./share";
 
-import NavBar from "../components/navBar";
+import NavBar from "./navBar";
 import TextBar from "../components/Textbar";
 import Button from "../components/Button";
 import Loader from "../components/Loader";
@@ -20,7 +20,7 @@ import "./index.scss";
 
 const NO_OF_CHANCES = 4;
 
-const App = () => {
+const Musaholic = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [songList, setSongList] = useState({});
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
@@ -242,4 +242,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Musaholic;
